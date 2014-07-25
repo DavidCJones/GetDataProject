@@ -46,29 +46,72 @@
 
   setwd("~/datasciencecoursera/GetDataProject/UCI HAR Dataset")
 
+
+## SET ENV
+  library(data.table)
+
 ##
 ## LOAD DATA FILES
 ##
 
 # Load Lables
   activity_labels <- read.table("activity_labels.txt")
-  activity_labels <- as.vector(activity_lables$V2)  #Convert to a simple vector
+  #activity_labels <- as.vector(activity_labels$V2)  #Convert to a simple vector
 
 # Load Features
   features <- read.table("features.txt")
   features <- as.vector(features$V2)  # Convert to a simple vector
 
-# Load Test data
-  xtest_fn <- "./test/X_test.txt"
+  # Load Test data
+  subject_test_fn <- "./test/subject_test.txt"
+  subject_test <- read.table(subject_test_fn)
+  subject_test <- as.vector(subject_test$V1)
+
+  # Handle Activity Lables
   ytest_label_fn <- "./test/y_test.txt"
   ytest_label <- read.table(ytest_label_fn)
-  ytest_label <- as.vector(ytest_label$V1)
-  xtest <- read.table(xtest_fn)       # kiss principle works here
+  test_label <- merge(ytest_label,activity_labels,by=c("V1"),sort=FALSE)
+  setnames(test_label, "V1", "activity_code")
+  setnames(test_label, "V2", "activity")
 
-# Load Train data
-  xtrain_fn <- "./train/X_train.txt"
+  # Load test dataset
+  xtest_fn <- "./test/X_test.txt"
+  xtest <- read.table(xtest_fn,col.names=features)
+
+  # Limit xtest to the columns I want keep xtest for second dataset
+  xtest2<- xtest[,grep("gravityMean|tBodyAccMean|tBodyAccJerkMean|tBodyGyroMean|tBodyGyroJerkMean|mean()|std()"
+              , names(xtest), value = TRUE) ]
+
+  xtest2 <- cbind(test_label,xtest2)          # Add activity label and codes
+  xtest2 <- cbind(subject_test,xtest2)        # Add subject identifier
+  xtest2 <- cbind(segment = "test", xtest2)   # Add Segment description
+
+  # Load Train data
+  subject_train_fn <- "./train/subject_train.txt"
+  subject_train <- read.table(subject_train_fn)
+  subject_train <- as.vector(subject_train$V1)
+
+  # Handle Activity Lables
   ytrain_label_fn <- "./train/y_train.txt"
   ytrain_label <- read.table(ytrain_label_fn)
-  ytrain_label <- as.vector(ytrain_label$V1)
+  train_label <- merge(ytrain_label,activity_labels,by=c("V1"),sort=FALSE)
+  setnames(train_label, "V1", "activity_code")
+  setnames(train_label, "V2", "activity")
 
-  xtrain <- read.table(xtrain_fn)     # kiss principle works here
+  # Load train dataset
+  xtrain_fn <- "./train/X_train.txt"
+  xtrain <- read.table(xtrain_fn,col.names=features)
+  xtrain <- cbind(train_label,xtrain)
+
+  # Limit xxtrain to the columns I want keep xtest for second dataset
+  xtrain2<- xtrain[,grep("gravityMean|tBodyAccMean|tBodyAccJerkMean|tBodyGyroMean|tBodyGyroJerkMean|mean()|std()"
+                     , names(xtrain), value = TRUE) ]
+
+  xtrain2 <- cbind(test_label,xtrain2)          # Add activity label and codes
+  xtrain2 <- cbind(subject_test,xtrain2)        # Add subject identifier
+  xtrain2 <- cbind(segment = "train", xtrain2)  # Add Segment description
+
+  # Merge Datasets together (test + train)
+
+  # Output Files
+
