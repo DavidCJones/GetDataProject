@@ -56,8 +56,7 @@
 
 # Load Lables
   activity_labels <- read.table("activity_labels.txt")
-  #activity_labels <- as.vector(activity_labels$V2)  #Convert to a simple vector
-
+  
 # Load Features
   features <- read.table("features.txt")
   features <- as.vector(features$V2)  # Convert to a simple vector
@@ -84,7 +83,16 @@
 
   xtest2 <- cbind(test_label,xtest2)          # Add activity label and codes
   xtest2 <- cbind(subject_test,xtest2)        # Add subject identifier
+  setnames(xtest2, "subject_test", "subject")
   xtest2 <- cbind(segment = "test", xtest2)   # Add Segment description
+
+  # xtest2 is ready for final merge for first tidy dataset
+  ############################################################################
+
+
+
+  # Handle the training data sets using the same logic that was used for the test dataset
+  #######################################################################################
 
   # Load Train data
   subject_train_fn <- "./train/subject_train.txt"
@@ -107,11 +115,40 @@
   xtrain2<- xtrain[,grep("gravityMean|tBodyAccMean|tBodyAccJerkMean|tBodyGyroMean|tBodyGyroJerkMean|mean()|std()"
                      , names(xtrain), value = TRUE) ]
 
-  xtrain2 <- cbind(test_label,xtrain2)          # Add activity label and codes
-  xtrain2 <- cbind(subject_test,xtrain2)        # Add subject identifier
-  xtrain2 <- cbind(segment = "train", xtrain2)  # Add Segment description
+  xtrain2 <- cbind(train_label,xtrain2)          # Add activity label and codes
+  xtrain2 <- cbind(subject_train,xtrain2)        # Add subject identifier
+  setnames(xtrain2, "subject_train", "subject")
+  xtrain2 <- cbind(segment = "train", xtrain2)   # Add Segment description
 
-  # Merge Datasets together (test + train)
+  # xtrain2 is ready for final merge for first tidy dataset
+  ############################################################################
 
-  # Output Files
+  # ods1_detail_mean_std.csv
+  # - Merge Datasets together (test + train)
+  # - Note the file willbe stored in the root of the working directory
+  # 
+  # File can be read into R using :
+  #   read.table("ods1_detail_mean_std.csv", header = TRUE, sep = ",", row.names = 1)
+  #     -OR-
+  #   read.csv("ods1_detail_mean_std.csv", row.names = 1)
+
+  ods1_detail_mean_std <- rbind(xtrain2,xtest2)  # Output Data Set 1 - Observation detail for Mean and Std
+  write.csv(ods1_detail_mean_std,file = "ods1_detail_mean_std.csv")  
+
+  # Create second Data Set with control Average of each variable 
+
+  ods2_ave_by_act_sub <- ods1_detail_mean_std
+  ods2_ave_by_act_sub$segment <- NULL
+  ods2_ave_by_act_sub$activity_code <- NULL
+
+  ods2_ave_by_act_sub <-aggregate(ods2_ave_by_act_sub[3:88], 
+                                  by=list(ods2_ave_by_act_sub$subject,ods2_ave_by_act_sub$activity),
+                                  FUN=mean, na.rm=TRUE)
+
+  setnames(ods2_ave_by_act_sub, "Group.1", "subject")
+  setnames(ods2_ave_by_act_sub, "Group.2", "activity")
+
+  write.csv(ods2_ave_by_act_sub,file = "ods2_ave_by_act_sub.csv")  
+
+  # END
 
