@@ -1,6 +1,6 @@
-Coursera - GetData - Project : CodeBook.md
+###Coursera - GetData - Project : CodeBook.md
 
-Input TEXT FILES:
+###Input TEXT FILES:
 
 Here are the input data for the project: 
   https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip 
@@ -19,13 +19,13 @@ y_train.txt: Training Activity labels.
 * All other input files are ignored
 
 
-Transformation Script :Run_Analysis.r
+###Transformation Script :Run_Analysis.r
 
 *** Download file and uncompress in :
 
   setwd("~/datasciencecoursera/GetDataProject/UCI HAR Dataset")
 
-PROCESS FLOW
+###PROCESS FLOW
     1. SET ENV
     2. LOAD DATA FILES
     2.a Load Lables - activity_labels.txt
@@ -43,9 +43,9 @@ PROCESS FLOW
     6.  Create second Data Set with control Average of each variable 
   END PROCESS FLOW  
 
-OutPut Files
+###OutPut Files
 
-ods1_detail_mean_std.csv
+###ods1_detail_mean_std.csv
  - Merge Datasets together (test + train)
  - Note the file willbe stored in the root of the working directory
  
@@ -54,12 +54,12 @@ ods1_detail_mean_std.csv
      -OR-
    read.csv("ods1_detail_mean_std.csv", row.names = 1)
    
-Rows:
+###Rows:
   Test    2,947 Obs.
   Train   7,352 Obs.
   Total: 10,299 Obs.of 90 variables
    
-Column Headings
+###Column Headings
  [0] ""  - Row Number 
  [1] "segment"          - Text (test|train) identifies original source file                          
  [2] "subject"          - Integer [1:30] idcentifies a unique person in the test                             
@@ -154,13 +154,13 @@ Column Headings
    
 #################################################################################################   
 
-  ods2_ave_by_act_sub.csv - second Data Set with control Average of each variable rolled up by activity and subject
+###ods2_ave_by_act_sub.csv - second Data Set with control Average of each variable rolled up by activity and subject
 
 
-Rows:
+###Rows:
   Total: 40 Obs.of 88 variables
 
-Column Headings
+###Column Headings
  [0] ""  - Row Number 
  [1] "subject"                             
  [2] "activity"                            
