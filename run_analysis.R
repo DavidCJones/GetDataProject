@@ -133,7 +133,7 @@
   #   read.csv("ods1_detail_mean_std.csv", row.names = 1)
 
   ods1_detail_mean_std <- rbind(xtrain2,xtest2)  # Output Data Set 1 - Observation detail for Mean and Std
-  write.csv(ods1_detail_mean_std,file = "ods1_detail_mean_std.csv")  
+  write.csv(ods1_detail_mean_std,file = "../ods1_detail_mean_std.csv")  
 
   # Create second Data Set with control Average of each variable 
 
@@ -148,7 +148,7 @@
   setnames(ods2_ave_by_act_sub, "Group.1", "subject")
   setnames(ods2_ave_by_act_sub, "Group.2", "activity")
 
-  write.csv(ods2_ave_by_act_sub,file = "ods2_ave_by_act_sub.csv")  
+  write.csv(ods2_ave_by_act_sub,file = "../ods2_ave_by_act_sub.csv")  
 
   # END
 
